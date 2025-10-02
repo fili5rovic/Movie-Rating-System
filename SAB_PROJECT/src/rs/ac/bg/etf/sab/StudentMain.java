@@ -2,6 +2,7 @@ package rs.ac.bg.etf.sab;
 
 import rs.ac.bg.etf.sab.operations.*;
 import rs.ac.bg.etf.sab.pf220192.*;
+import rs.ac.bg.etf.sab.tests.TestHandler;
 import rs.ac.bg.etf.sab.tests.TestRunner;
 
 public class StudentMain {
@@ -9,24 +10,20 @@ public class StudentMain {
     public static void main(String[] args) throws Exception {
         GeneralOperations generalOperations = new pf220192_GeneralOperations();
         GenresOperations genresOperations = new pf220192_GenresOperations();
+        MoviesOperations moviesOperations = new pf220192_MoviesOperations();
+        RatingsOperations ratingsOperation = new pf220192_RatingsOperations();
+        TagsOperations tagsOperations = new pf220192_TagsOperations();
+        UsersOperations usersOperations = new pf220192_UsersOperations();
+        WatchlistsOperations watchlistsOperations = new pf220192_WatchlistsOperations();
 
-        Integer kviz = genresOperations.addGenre("kviz");
-        System.out.println("Test: " + kviz);
-
-//        MoviesOperations moviesOperations = new piggbbbb_MoviesOperations();
-//        RatingsOperations ratingsOperation = new piggbbbb_RatingsOperations();
-//        TagsOperations tagsOperations = new piggbbbb_TagsOperations();
-//        UsersOperations usersOperations = new pn150121_UsersOperations();
-//        WatchlistsOperations watchlistsOperations = new pn150121_WatchlistsOperations();
-
-//        TestHandler.createInstance(
-//                genresOperations,
-//                moviesOperations,
-//                ratingsOperation,
-//                tagsOperations,
-//                usersOperations,
-//                watchlistsOperations,
-//                generalOperations);
+        TestHandler.createInstance(
+                genresOperations,
+                moviesOperations,
+                ratingsOperation,
+                tagsOperations,
+                usersOperations,
+                watchlistsOperations,
+                generalOperations);
         TestRunner.runTests();
     }
 }

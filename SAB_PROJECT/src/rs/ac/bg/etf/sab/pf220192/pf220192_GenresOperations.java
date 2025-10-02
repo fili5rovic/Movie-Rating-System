@@ -2,6 +2,7 @@ package rs.ac.bg.etf.sab.pf220192;
 
 import rs.ac.bg.etf.sab.connection.DB;
 import rs.ac.bg.etf.sab.operations.GenresOperations;
+import rs.ac.bg.etf.sab.util.DBUtil;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -9,20 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class pf220192_GenresOperations implements GenresOperations {
-
-    private boolean genreExists(Integer idGenre) {
-        String sqlCheckExisting = "SELECT idZanr FROM Zanr WHERE idZanr = ?";
-
-        try (var checkStatement = DB.getConnection().prepareStatement(sqlCheckExisting)) {
-            checkStatement.setInt(1, idGenre);
-            var resultSet = checkStatement.executeQuery();
-            return resultSet.next();
-
-        } catch (SQLException e) {
-            System.err.println("SQL Error in genreExists: " + e.getMessage());
-            return false;
-        }
-    }
 
     @Override
     public Integer addGenre(String name) {
@@ -53,7 +40,7 @@ public class pf220192_GenresOperations implements GenresOperations {
 
     @Override
     public Integer updateGenre(Integer idGenre, String name) {
-        if (!genreExists(idGenre)) {
+        if (!DBUtil.recordExists("Zanr", "idZanr", idGenre)) {
             return null;
         }
 
@@ -85,7 +72,7 @@ public class pf220192_GenresOperations implements GenresOperations {
 
     @Override
     public Integer removeGenre(Integer idGenre) {
-        if (!genreExists(idGenre)) {
+        if (!DBUtil.recordExists("Zanr", "idZanr", idGenre)) {
             return null;
         }
 
