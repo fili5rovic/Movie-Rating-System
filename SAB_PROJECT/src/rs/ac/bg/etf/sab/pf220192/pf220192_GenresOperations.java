@@ -5,9 +5,9 @@ import rs.ac.bg.etf.sab.operations.GenresOperations;
 import rs.ac.bg.etf.sab.util.DBUtil;
 
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class pf220192_GenresOperations implements GenresOperations {
 
@@ -16,31 +16,13 @@ public class pf220192_GenresOperations implements GenresOperations {
         if (doesGenreExist(name)) {
             return null;
         }
-
-        String sqlInsert = "INSERT INTO Zanr(naziv) VALUES(?)";
-
-        try (var insertStatement = DB.getConnection().prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
-            insertStatement.setString(1, name);
-            int affectedRows = insertStatement.executeUpdate();
-
-            if (affectedRows == 1) {
-                var generatedKeys = insertStatement.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    return generatedKeys.getInt(1);
-                }
-            }
-
-        } catch (SQLException e) {
-            System.err.println("SQL Error in addGenre: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        return -1;
+        return DBUtil.insertRecord("Zanr", "naziv",name);
     }
+
 
     @Override
     public Integer updateGenre(Integer idGenre, String name) {
-        if (!DBUtil.recordExists("Zanr", "idZanr", idGenre)) {
+        if (!DBUtil.recordExists("Zanr", idGenre)) {
             return null;
         }
 
@@ -57,82 +39,33 @@ public class pf220192_GenresOperations implements GenresOperations {
             return -1;
         }
 
-        String sqlUpdate = "UPDATE Zanr SET naziv = ? WHERE idZanr = ?";
-        try (var updateStatement = DB.getConnection().prepareStatement(sqlUpdate)) {
-            updateStatement.setString(1, name);
-            updateStatement.setInt(2, idGenre);
-            int num = updateStatement.executeUpdate();
-            return num == 1 ? idGenre : -1;
-
-        } catch (SQLException e) {
-            System.err.println("SQL Error in updateGenre: " + e.getMessage());
-            return -1;
-        }
+        boolean updated = DBUtil.updateSingleValue("Zanr", "naziv", name, idGenre);
+        return updated ? idGenre : -1;
     }
 
     @Override
     public Integer removeGenre(Integer idGenre) {
-        if (!DBUtil.recordExists("Zanr", "idZanr", idGenre)) {
+        if (!DBUtil.recordExists("Zanr", idGenre)) {
             return null;
         }
-
-        String sqlDelete = "DELETE FROM Zanr WHERE idZanr = ?";
-        try (var deleteStatement = DB.getConnection().prepareStatement(sqlDelete)) {
-            deleteStatement.setInt(1, idGenre);
-            int num = deleteStatement.executeUpdate();
-            return num == 1 ? 1 : -1;
-
-        } catch (SQLException e) {
-            System.err.println("SQL Error in removeGenre: " + e.getMessage());
-            return -1;
-        }
+        boolean deleted = DBUtil.deleteRecord("Zanr", idGenre);
+        return deleted ? idGenre : -1;
     }
+
 
     @Override
     public boolean doesGenreExist(String name) {
-        String sqlCheckExisting = "SELECT idZanr FROM Zanr WHERE naziv = ?";
-
-        try (var checkStatement = DB.getConnection().prepareStatement(sqlCheckExisting)) {
-            checkStatement.setString(1, name);
-            var resultSet = checkStatement.executeQuery();
-            return resultSet.next();
-
-        } catch (SQLException e) {
-            System.err.println("SQL Error in genreNameExists: " + e.getMessage());
-            return false;
-        }
+        return DBUtil.valueExists("Zanr", "naziv", name);
     }
 
     @Override
     public Integer getGenreId(String name) {
-        String sql = "SELECT idZanr FROM Zanr WHERE naziv = ?";
-        try (var statement = DB.getConnection().prepareStatement(sql)) {
-            statement.setString(1, name);
-            var resultSet = statement.executeQuery();
-            return resultSet.next() ? resultSet.getInt(1) : null;
-
-        } catch (SQLException e) {
-            System.err.println("SQL Error in getGenreId: " + e.getMessage());
-            return null;
-        }
+        return DBUtil.getIdByValue("Zanr", "naziv", name);
     }
 
     @Override
     public List<Integer> getAllGenreIds() {
-        List<Integer> ids = new ArrayList<>();
-        String sql = "SELECT idZanr FROM Zanr ORDER BY idZanr";
-
-        try (var statement = DB.getConnection().createStatement();
-             var resultSet = statement.executeQuery(sql)) {
-
-            while (resultSet.next()) {
-                ids.add(resultSet.getInt(1));
-            }
-
-        } catch (SQLException e) {
-            System.err.println("SQL Error in getAllGenreIds: " + e.getMessage());
-        }
-
-        return ids;
+        return DBUtil.getAllIds("Zanr");
     }
+
 }
