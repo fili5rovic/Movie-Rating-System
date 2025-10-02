@@ -1,4 +1,4 @@
-package rs.ac.bg.etf.sab;
+package rs.ac.bg.etf.sab.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -33,26 +33,30 @@ public class DB {
         }
     }
 
-    public static DB getInstance() {
+    private static DB getInstance() {
         if (db == null)
             db = new DB();
         return db;
     }
 
-    public Connection getConnection() {
-        return connection;
+    public static Connection getConnection() {
+        return getInstance().connection;
     }
 
-    public void closeConnection() {
+    public static void closeConnection() {
+        if(db == null)
+            return;
+        Connection connection = getInstance().connection;
         try {
-            connection.close();
+            if(connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("Connection closed.");
+                db = null;
+            }
         } catch (SQLException e) {
             System.err.println("Couldn't close connection.");
             System.err.println(e.getMessage());
         }
     }
 
-    public static void main(String[] args) {
-        DB.getInstance();
-    }
 }

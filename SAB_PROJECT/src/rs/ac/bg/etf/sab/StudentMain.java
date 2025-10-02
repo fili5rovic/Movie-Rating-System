@@ -1,13 +1,18 @@
 package rs.ac.bg.etf.sab;
 
+import rs.ac.bg.etf.sab.operations.*;
+import rs.ac.bg.etf.sab.pf220192.*;
 import rs.ac.bg.etf.sab.tests.TestRunner;
 
 public class StudentMain {
 
     public static void main(String[] args) throws Exception {
-// Uncomment and change fallowing lines
-//        GeneralOperations generalOperations = new piggbbbb_GeneralOperations();
-//        GenresOperations genresOperations = new piggbbbb_GenresOperations();
+        GeneralOperations generalOperations = new pf220192_GeneralOperations();
+        GenresOperations genresOperations = new pf220192_GenresOperations();
+
+        Integer kviz = genresOperations.addGenre("kviz");
+        System.out.println("Test: " + kviz);
+
 //        MoviesOperations moviesOperations = new piggbbbb_MoviesOperations();
 //        RatingsOperations ratingsOperation = new piggbbbb_RatingsOperations();
 //        TagsOperations tagsOperations = new piggbbbb_TagsOperations();
