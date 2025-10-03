@@ -5,7 +5,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DBUtil {
+public class Util {
 
     // --- Mapping table names to their primary key column ---
     private static final Map<String, String> tableIdMap = Map.of(
@@ -48,20 +48,16 @@ public class DBUtil {
     }
 
     // --- READ ---
-    public static Integer fetchIdById(String table, Integer id) {
-        String idCol = getIdColumn(table);
-        String sql = String.format("SELECT %s FROM %s WHERE %s = ?", idCol, table, idCol);
-        try (PreparedStatement ps = DB.getConnection().prepareStatement(sql)) {
-            ps.setObject(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-            }
+    public static List<String> fetchColumns(String table, String column) {
+        String sql = String.format("SELECT %s FROM %s", column, table);
+        List<String> result = new ArrayList<>();
+        try (PreparedStatement ps = DB.getConnection().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) result.add(rs.getString(1));
         } catch (SQLException e) {
-            System.err.println("SQL Error in fetchIdById: " + e.getMessage());
+            System.err.println("SQL Error in fetchColumns: " + e.getMessage());
         }
-        return null;
+        return result;
     }
 
     public static List<Integer> fetchIdsWhere(String table, String whereClause, List<Object> params) {

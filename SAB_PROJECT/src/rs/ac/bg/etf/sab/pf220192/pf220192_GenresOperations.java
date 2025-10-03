@@ -1,7 +1,7 @@
 package rs.ac.bg.etf.sab.pf220192;
 
 import rs.ac.bg.etf.sab.operations.GenresOperations;
-import rs.ac.bg.etf.sab.util.DBUtil;
+import rs.ac.bg.etf.sab.util.Util;
 
 import java.util.List;
 import java.util.Map;
@@ -11,17 +11,17 @@ public class pf220192_GenresOperations implements GenresOperations {
 
     @Override
     public Integer addGenre(String name) {
-        return DBUtil.insert("Zanr", Map.of("naziv", name));
+        return Util.insert("Zanr", Map.of("naziv", name));
     }
 
     @Override
     public Integer updateGenre(Integer id, String name) {
-        return DBUtil.updateById("Zanr", id, Map.of("naziv", name)) ? id : null;
+        return Util.updateById("Zanr", id, Map.of("naziv", name)) ? id : null;
     }
 
     @Override
     public Integer removeGenre(Integer id) {
-        return DBUtil.deleteById("Zanr", id) ? id : null;
+        return Util.deleteById("Zanr", id) ? id : null;
     }
 
     @Override
@@ -31,12 +31,12 @@ public class pf220192_GenresOperations implements GenresOperations {
 
     @Override
     public Integer getGenreId(String name) {
-        List<Integer> ids = DBUtil.fetchIdsWhere("Zanr","naziv=?",List.of(name));
+        List<Integer> ids = Util.fetchIdsWhere("Zanr","naziv=?",List.of(name));
         return ids.isEmpty() ? null : ids.get(0);
     }
 
     @Override
     public List<Integer> getAllGenreIds() {
-        return DBUtil.fetchAllIds("Zanr");
+        return Util.fetchAllIds("Zanr");
     }
 }
