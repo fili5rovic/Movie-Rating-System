@@ -3,93 +3,71 @@ package rs.ac.bg.etf.sab.pf220192;
 import rs.ac.bg.etf.sab.operations.MoviesOperations;
 import rs.ac.bg.etf.sab.util.DBUtil;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class pf220192_MoviesOperations implements MoviesOperations {
+
     @Override
     public Integer addMovie(String title, Integer genreId, String director) {
-        Map<String, Object> values = new LinkedHashMap<>();
-        values.put("naslov", title);
-        values.put("reziser", director);
+        Integer movieId = DBUtil.insert("Film", Map.of("naslov", title, "reziser", director));
+        if (movieId == null)
+            return null;
 
-        Integer movieId = DBUtil.insertRecord("Film", values);
-        if (movieId == -1) return null;
-
-        if (genreId != null && DBUtil.recordExists("Zanr", genreId)) {
-            Map<String, Object> linkValues = new LinkedHashMap<>();
-            linkValues.put("idFilm", movieId);
-            linkValues.put("idZanr", genreId);
-            DBUtil.insertRecord("FilmZanrLink", linkValues);
-        }
-
+        DBUtil.insert("FilmZanrLink", Map.of("idFilm", movieId, "idZanr", genreId));
         return movieId;
     }
 
     @Override
-    public Integer updateMovieTitle(Integer id, String newTitle) {
-        if (!DBUtil.recordExists("Film", id))
-            return null;
-
-        DBUtil.updateSingleValue("Film", "naslov", newTitle, id);
-        return id;
-    }
-
-
-    // ovde moram da vidim ako je vec linkovano
-    @Override
-    public Integer addGenreToMovie(Integer movieID, Integer genreID) {
-        Map<String, Object> values = new LinkedHashMap<>();
-        values.put("idFilm", movieID);
-        values.put("idZanr", genreID);
-
-        return DBUtil.insertRecord("FilmZanrLink", values);
+    public Integer updateMovieTitle(Integer movieId, String title) {
+        return DBUtil.updateById("Film", movieId, Map.of("naslov", title)) ? movieId : null;
     }
 
     @Override
-    public Integer removeGenreFromMovie(Integer movieID, Integer genreID) {
-        Integer linkID = DBUtil.getIdByValue("FilmZanrLink", "idFilm", movieID);
-        if (linkID == null)
-            return null;
-
-        return DBUtil.deleteRecord("FilmZanrLink", linkID) ? linkID : null;
+    public Integer addGenreToMovie(Integer movieId, Integer genreId) {
+        return DBUtil.insert("FilmZanrLink", Map.of("idFilm", movieId, "idZanr", genreId));
     }
 
     @Override
-    public Integer updateMovieDirector(Integer id, String newDirector) {
-        if (!DBUtil.recordExists("Film", id)) return null;
-        return DBUtil.updateSingleValue("Film", "reziser", newDirector, id) ? id : null;
+    public Integer removeGenreFromMovie(Integer movieId, Integer genreId) {
+        return DBUtil.deleteWhere("FilmZanrLink", "idFilm=? and idZanr=?", List.of(movieId, genreId)) ? movieId : null;
+    }
+
+    @Override
+    public Integer updateMovieDirector(Integer id, String director) {
+        return DBUtil.updateById("Film", id, Map.of("reziser", director)) ? id : null;
+    }
+
+    @Override
+    public Integer removeMovie(Integer id) {
+        DBUtil.deleteWhere("FilmZanrLink", "idFilm = ?", List.of(id));
+        DBUtil.deleteWhere("FilmOznakaLink", "idFilm = ?", List.of(id));
+        DBUtil.deleteWhere("Lista", "idFilm = ?", List.of(id));
+        DBUtil.deleteWhere("Ocena", "idFilm = ?", List.of(id));
+        return DBUtil.deleteById("Film", id) ? id : null;
     }
 
 
     @Override
-    public Integer removeMovie(Integer movieID) {
-        return DBUtil.deleteRecord("Film", movieID) ? movieID : null;
-    }
-
-    @Override
-    public List<Integer> getMovieIds(String s, String s1) {
-        return List.of();
+    public List<Integer> getMovieIds(String title, String director) {
+        return DBUtil.fetchIdsWhere("Film", "naslov=? and reziser=?", List.of(title, director));
     }
 
     @Override
     public List<Integer> getAllMovieIds() {
-        return DBUtil.getAllIds("Film");
+        return DBUtil.fetchAllIds("Film");
+    }
+
+    public List<Integer> getMovieIdsByGenre(Integer genreId) {
+        return DBUtil.fetchColumnWhere("FilmZanrLink", "idFilm", "idZanr=?", List.of(genreId));
+    }
+
+    public List<Integer> getGenreIdsForMovie(Integer movieId) {
+        return DBUtil.fetchColumnWhere("FilmZanrLink", "idZanr", "idFilm=?", List.of(movieId));
     }
 
     @Override
-    public List<Integer> getMovieIdsByGenre(Integer integer) {
-        return List.of();
-    }
-
-    @Override
-    public List<Integer> getGenreIdsForMovie(Integer integer) {
-        return List.of();
-    }
-
-    @Override
-    public List<Integer> getMovieIdsByDirector(String s) {
-        return List.of();
+    public List<Integer> getMovieIdsByDirector(String director) {
+        return DBUtil.fetchIdsWhere("Film", "reziser=?", List.of(director));
     }
 }
