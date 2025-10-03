@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Util {
+public class DBUtil {
 
     // --- Mapping table names to their primary key column ---
     private static final Map<String, String> tableIdMap = Map.of(
