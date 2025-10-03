@@ -36,7 +36,7 @@ BEGIN
     BEGIN
         RAISERROR('Ne mozete dati ekstremnu ocenu u ovom zanru dok ne popravite svoje prethodne ocene.',16,1)
         ROLLBACK TRANSACTION;
-        RETURN
+        RETURN;
     END
 END
 GO

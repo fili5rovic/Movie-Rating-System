@@ -7,7 +7,7 @@ import rs.ac.bg.etf.sab.tests.TestRunner;
 
 public class StudentMain {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         GeneralOperations generalOperations = new pf220192_GeneralOperations();
         GenresOperations genresOperations = new pf220192_GenresOperations();
         MoviesOperations moviesOperations = new pf220192_MoviesOperations();

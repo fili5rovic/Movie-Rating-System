@@ -1,39 +1,30 @@
 CREATE OR ALTER FUNCTION F_USER_DESC 
 (
-	@id int
+    @id int
 )
 RETURNS VARCHAR(11)
 AS
 BEGIN
-	declare @brojFilmova int
+    declare @brojFilmova int
 
+    SELECT @brojFilmova = COUNT(*)
+    FROM Ocena
+    WHERE idKor = @id
 
-	SELECT @brojFilmova = COUNT(*)
-	FROM Ocena
-	WHERE idKor = @id
+    if(@brojFilmova < 10)
+        return 'undefined'
 
-	if(@brojFilmova < 10)
-		return 'nedefinisan'
+    declare @brojOznaka int
 
-	declare @brojOznaka int
+    SELECT @brojOznaka = COUNT(distinct oz.idOznaka)
+    FROM Ocena o 
+    LEFT JOIN FilmOznakaLink f ON (o.idFilm=f.idFilm)
+    LEFT JOIN Oznaka oz ON(f.idOznaka=oz.idOznaka)
+    WHERE o.idKor = @id AND oz.idOznaka IS NOT NULL
 
-	SELECT @brojOznaka = COUNT(distinct oz.idOznaka)
-	FROM Ocena o JOIN FilmOznakaLink f ON (o.idFilm=f.idFilm) JOIN Oznaka oz ON(f.idOznaka=oz.idOznaka)
-	WHERE idKor = @id
+    if(@brojOznaka >= 10)
+        return 'curious'
 
-	if(@brojOznaka>=5)
-		return 'radoznao'
-
-	return 'fokusiran'
-
+    return 'focused'
 END
 GO
-
-SELECT 
-    k.idKor, 
-    dbo.F_USER_DESC(k.idKor) AS opis,
-    (SELECT COUNT(DISTINCT f.idOznaka)
-     FROM Ocena o
-     JOIN FilmOznakaLink f ON o.idFilm = f.idFilm
-     WHERE o.idKor = k.idKor) AS ukupno
-FROM Korisnik k;
