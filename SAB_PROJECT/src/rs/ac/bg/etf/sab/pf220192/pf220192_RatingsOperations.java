@@ -47,9 +47,11 @@ public class pf220192_RatingsOperations implements RatingsOperations {
 
     @Override
     public Integer getRating(Integer userId, Integer movieId) {
-        var ocene = Util.fetchIdsWhere("Ocena", "idKor=? AND idFilm=?", List.of(userId, movieId));
+        List<Integer> ocene = Util.fetchColumnWhere("Ocena", "ocena", "idKor=? AND idFilm=?", List.of(userId, movieId));
+        if (ocene.isEmpty()) return null;
         return ocene.get(0);
     }
+
 
     @Override
     public List<Integer> getRatedMoviesByUser(Integer userId) {

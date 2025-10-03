@@ -1,6 +1,7 @@
 package rs.ac.bg.etf.sab.util;
 
 import rs.ac.bg.etf.sab.connection.DB;
+
 import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -194,6 +195,67 @@ public class Util {
         }
         return false;
     }
+
+    public static String callScalarFunction(String functionName, int idParam) {
+        String sql = "{? = call " + functionName + "(?)}";
+        try (CallableStatement cs = DB.getConnection().prepareCall(sql)) {
+            cs.registerOutParameter(1, Types.VARCHAR);
+            cs.setInt(2, idParam);
+
+            cs.execute();
+            return cs.getString(1);
+        } catch (SQLException e) {
+            System.err.println("SQL error: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public static List<String> callTableFunction(String functionName, int idParam, String columnName) {
+        String sql = "SELECT * FROM " + functionName + "(?)";
+        try (PreparedStatement ps = DB.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, idParam);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                List<String> results = new ArrayList<>();
+                while (rs.next()) {
+                    results.add(rs.getString(columnName));
+                }
+                return results;
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL error: " + e.getMessage());
+            return List.of();
+        }
+    }
+
+    public static List<Integer> callProcedureForIntColumn(String procedureName, int idParam, String columnName) {
+        String sql = "{call " + procedureName + "(?)}";
+        try (CallableStatement cs = DB.getConnection().prepareCall(sql)) {
+            cs.setInt(1, idParam);
+
+            try (ResultSet rs = cs.executeQuery()) {
+                List<Integer> results = new ArrayList<>();
+                while (rs.next()) {
+                    results.add(rs.getInt(columnName));
+                }
+                return results;
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL error: " + e.getMessage());
+            return List.of();
+        }
+    }
+
+    public static void callVoidProcedure(String procedureName, int idParam) {
+        String sql = "{call " + procedureName + "(?)}";
+        try (CallableStatement cs = DB.getConnection().prepareCall(sql)) {
+            cs.setInt(1, idParam);
+            cs.execute();
+        } catch (SQLException e) {
+            System.err.println("SQL error: " + e.getMessage());
+        }
+    }
+
 
     private static void setParams(PreparedStatement ps, Collection<?> values) throws SQLException {
         if (values == null) return;

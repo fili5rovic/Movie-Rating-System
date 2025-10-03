@@ -9,6 +9,8 @@ import java.util.Map;
 public class pf220192_UsersOperations implements UsersOperations {
     @Override
     public Integer addUser(String username) {
+        if(Util.existsWhere("Korisnik","ime=?",List.of(username)))
+            return null;
         return Util.insert("Korisnik", Map.of("ime",username,"brojNagrada",0));
     }
 
@@ -42,21 +44,26 @@ public class pf220192_UsersOperations implements UsersOperations {
 
     @Override
     public List<Integer> getRecommendedMoviesFromFavoriteGenres(Integer id) {
-        return List.of();
+        return Util.callProcedureForIntColumn("SP_RECOMMENDATION", id, "idFilm");
     }
 
     @Override
     public Integer getRewards(Integer id) {
-        return 0;
+        Util.callVoidProcedure("SP_REWARD_USER_PROC", id);
+
+        List<Integer> nagrade = Util.fetchColumnWhere("Korisnik", "brojNagrada", "idKor=?", List.of(id));
+        if(nagrade.isEmpty())
+            return 0;
+        return nagrade.get(0);
     }
 
     @Override
     public List<String> getThematicSpecializations(Integer id) {
-        return List.of();
+        return Util.callTableFunction("F_USER_SPEC", id, "oznaka");
     }
 
     @Override
     public String getUserDescription(Integer id) {
-        return "";
+        return Util.callScalarFunction("F_USER_DESC",id);
     }
 }

@@ -10,21 +10,27 @@ import java.util.Map;
 public class pf220192_TagsOperations implements TagsOperations {
     @Override
     public Integer addTag(Integer movieId, String tag) {
-        // Check if movie exists
-        if(!Util.existsById("Film", movieId))
+        if (!Util.existsById("Film", movieId))
             return null;
 
         List<Integer> tagIds = Util.fetchIdsWhere("Oznaka", "oznaka=?", List.of(tag));
-        if(tagIds.isEmpty())
-            return null;
-        Integer tagId = tagIds.get(0);
+        Integer tagId;
+        if (tagIds.isEmpty()) {
+            tagId = Util.insert("Oznaka", Map.of("oznaka", tag));
+        } else {
+            tagId = tagIds.get(0);
+        }
 
-        if(Util.existsWhere("FilmOznakaLink", "idFilm=? AND idOznaka=?", List.of(movieId, tagId)))
+        if (tagId == null) return null;
+
+        if (Util.existsWhere("FilmOznakaLink", "idFilm=? AND idOznaka=?", List.of(movieId, tagId)))
             return null;
 
         Integer linkId = Util.insert("FilmOznakaLink", Map.of("idFilm", movieId, "idOznaka", tagId));
+
         return linkId != null ? movieId : null;
     }
+
 
     @Override
     public Integer removeTag(Integer movieId, String tag) {
