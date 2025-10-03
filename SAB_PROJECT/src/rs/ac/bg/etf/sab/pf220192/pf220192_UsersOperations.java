@@ -29,7 +29,7 @@ public class pf220192_UsersOperations implements UsersOperations {
 
     @Override
     public Integer getUserId(String username) {
-        List<Integer> integers = Util.fetchColumnWhere("Korisnik", "ime", "ime=?", List.of(username));
+        List<Integer> integers = Util.fetchColumnWhere("Korisnik", "idKor", "ime=?", List.of(username));
         if(integers.isEmpty())
             return null;
         return integers.get(0);

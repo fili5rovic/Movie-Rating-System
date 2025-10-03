@@ -95,6 +95,22 @@ public class Util {
         return result;
     }
 
+    public static List<String> fetchColumnStrWhere(String table, String column, String whereClause, List<Object> params) {
+        String sql = String.format("SELECT %s FROM %s WHERE %s", column, table, whereClause);
+        List<String> result = new ArrayList<>();
+        try (PreparedStatement ps = DB.getConnection().prepareStatement(sql)) {
+            if (params != null && !params.isEmpty() && whereClause.contains("?")) {
+                setParams(ps, params);
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) result.add(rs.getString(1));
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL Error in fetchColumnStrWhere: " + e.getMessage());
+        }
+        return result;
+    }
+
     public static List<Integer> fetchAllIds(String table) {
         String idCol = getIdColumn(table);
         String sql = String.format("SELECT %s FROM %s", idCol, table);

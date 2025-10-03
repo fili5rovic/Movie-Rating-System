@@ -11,6 +11,8 @@ public class pf220192_GenresOperations implements GenresOperations {
 
     @Override
     public Integer addGenre(String name) {
+        if(Util.existsWhere("Zanr","naziv=?",List.of(name)))
+            return null;
         return Util.insert("Zanr", Map.of("naziv", name));
     }
 

@@ -25,8 +25,19 @@ public class pf220192_MoviesOperations implements MoviesOperations {
 
     @Override
     public Integer addGenreToMovie(Integer movieId, Integer genreId) {
-        return Util.insert("FilmZanrLink", Map.of("idFilm", movieId, "idZanr", genreId));
+        if (Util.fetchIdsWhere("Film", "idFilm=?", List.of(movieId)).isEmpty()) {
+            return null;
+        }
+
+        if (!Util.fetchColumnWhere(
+                "FilmZanrLink", "idFilm", "idFilm=? and idZanr=?", List.of(movieId, genreId)).isEmpty()) {
+            return null;
+        }
+
+        Integer linkId = Util.insert("FilmZanrLink", Map.of("idFilm", movieId, "idZanr", genreId));
+        return linkId != null ? movieId : null;
     }
+
 
     @Override
     public Integer removeGenreFromMovie(Integer movieId, Integer genreId) {
