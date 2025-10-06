@@ -1,6 +1,6 @@
-package student.util;
+package rs.ac.bg.etf.sab.util;
 
-import student.DB;
+import rs.ac.bg.etf.sab.connection.DB;
 
 import java.sql.*;
 import java.util.*;

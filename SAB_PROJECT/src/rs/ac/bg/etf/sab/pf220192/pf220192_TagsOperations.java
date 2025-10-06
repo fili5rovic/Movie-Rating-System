@@ -1,7 +1,7 @@
-package student;
+package rs.ac.bg.etf.sab.pf220192;
 
 import rs.ac.bg.etf.sab.operations.TagsOperations;
-import student.util.DBUtil;
+import rs.ac.bg.etf.sab.util.DBUtil;
 
 import java.util.ArrayList;
 import java.util.List;
