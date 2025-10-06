@@ -1,7 +1,4 @@
-package rs.ac.bg.etf.sab;
-
 import rs.ac.bg.etf.sab.operations.*;
-import rs.ac.bg.etf.sab.pf220192.*;
 import rs.ac.bg.etf.sab.tests.TestHandler;
 import rs.ac.bg.etf.sab.tests.TestRunner;
 

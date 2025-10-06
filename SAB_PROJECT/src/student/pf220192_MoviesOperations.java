@@ -1,7 +1,7 @@
-package rs.ac.bg.etf.sab.pf220192;
+package student;
 
 import rs.ac.bg.etf.sab.operations.MoviesOperations;
-import rs.ac.bg.etf.sab.util.DBUtil;
+import student.util.DBUtil;
 
 import java.util.List;
 import java.util.Map;

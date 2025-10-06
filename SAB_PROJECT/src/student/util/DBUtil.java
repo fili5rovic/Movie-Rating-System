@@ -1,4 +1,4 @@
-package rs.ac.bg.etf.sab.util;
+package student.util;
 
 import rs.ac.bg.etf.sab.connection.DB;
 
@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 public class DBUtil {
 
-    // --- Mapping table names to their primary key column ---
     private static final Map<String, String> tableIdMap = Map.of(
             "Korisnik", "idKor",
             "Film", "idFilm",
@@ -27,7 +26,6 @@ public class DBUtil {
         return idCol;
     }
 
-    // --- CREATE ---
     public static Integer insert(String table, Map<String, Object> values) {
         if (values == null || values.isEmpty())
             throw new IllegalArgumentException("Values map cannot be empty");
@@ -48,7 +46,6 @@ public class DBUtil {
         return null;
     }
 
-    // --- READ ---
     public static List<String> fetchColumns(String table, String column) {
         String sql = String.format("SELECT %s FROM %s", column, table);
         List<String> result = new ArrayList<>();
@@ -145,7 +142,6 @@ public class DBUtil {
         return false;
     }
 
-    // --- DELETE ---
     public static boolean deleteById(String table, Integer id) {
         String idCol = getIdColumn(table);
         String sql = String.format("DELETE FROM %s WHERE %s = ?", table, idCol);
