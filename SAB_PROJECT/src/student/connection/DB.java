@@ -20,7 +20,7 @@ public class DB {
 
     private Connection connection = null;
 
-    private static DB db;
+    private static volatile DB db;
 
     private DB() {
         try {
@@ -35,7 +35,11 @@ public class DB {
 
     private static DB getInstance() {
         if (db == null)
-            db = new DB();
+            synchronized (DB.class) {
+                if(db == null) {
+                    db = new DB();
+                }
+            }
         return db;
     }
 
