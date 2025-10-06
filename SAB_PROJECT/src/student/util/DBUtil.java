@@ -1,6 +1,7 @@
 package student.util;
 
-import rs.ac.bg.etf.sab.connection.DB;
+
+import student.connection.DB;
 
 import java.sql.*;
 import java.util.*;
@@ -41,7 +42,7 @@ public class DBUtil {
                 if (rs.next()) return rs.getInt(1);
             }
         } catch (SQLException e) {
-            System.err.println("SQL Error in insert: " + e.getMessage());
+            System.out.println("SQL Error in insert: " + e.getMessage());
         }
         return null;
     }

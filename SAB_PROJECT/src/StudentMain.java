@@ -2,6 +2,8 @@ import rs.ac.bg.etf.sab.operations.*;
 import rs.ac.bg.etf.sab.tests.TestHandler;
 import rs.ac.bg.etf.sab.tests.TestRunner;
 
+import student.*;
+
 public class StudentMain {
 
     public static void main(String[] args) {
