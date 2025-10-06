@@ -8,6 +8,7 @@ import student.connection.DB;
 public class StudentMain {
 
     public static void main(String[] args) {
+        DB.getConnection();
         GeneralOperations generalOperations = new pf220192_GeneralOperations();
         GenresOperations genresOperations = new pf220192_GenresOperations();
         MoviesOperations moviesOperations = new pf220192_MoviesOperations();
