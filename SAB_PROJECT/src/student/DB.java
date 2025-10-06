@@ -1,4 +1,4 @@
-package rs.ac.bg.etf.sab.connection;
+package student;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

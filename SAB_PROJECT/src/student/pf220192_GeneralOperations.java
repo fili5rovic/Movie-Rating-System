@@ -1,6 +1,4 @@
-package rs.ac.bg.etf.sab.pf220192;
-
-import rs.ac.bg.etf.sab.connection.DB;
+package student;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
