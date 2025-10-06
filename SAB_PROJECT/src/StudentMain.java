@@ -3,6 +3,7 @@ import rs.ac.bg.etf.sab.tests.TestHandler;
 import rs.ac.bg.etf.sab.tests.TestRunner;
 
 import student.*;
+import student.connection.DB;
 
 public class StudentMain {
 
@@ -24,5 +25,6 @@ public class StudentMain {
                 watchlistsOperations,
                 generalOperations);
         TestRunner.runTests();
+        DB.closeConnection();
     }
 }
